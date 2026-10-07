@@ -2,10 +2,10 @@
   "name": "omniblox",
   "version": "1.0.0",
   "description": "Roblox-inspired 3D web game",
-  "main": "dist/server.js",
+  "main": "dist/js/server.js",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/server.js"
+    "start": "node dist/js/server.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
