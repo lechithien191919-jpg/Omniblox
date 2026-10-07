@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Omniblox - 3D Roblox Web Edition</title>
+    <style>
+        body { margin: 0; overflow: hidden; background: #000; font-family: sans-serif; user-select: none; }
+        
+        /* Giao diện nút bấm điều khiển cảm ứng */
+        #touch-controls {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 10;
+        }
+        .control-row { display: flex; justify-content: center; gap: 10px; }
+        .ctrl-btn {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            outline: none;
+            touch-action: manipulation;
+        }
+        .ctrl-btn:active { background: rgba(255, 255, 255, 0.6); }
+
+        #btn-jump {
+            position: absolute;
+            bottom: 40px;
+            right: 40px;
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 165, 0, 0.6);
+            border: 2px solid white;
+            border-radius: 50%;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #info {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            color: white;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 10px 15px;
+            border-radius: 8px;
+            pointer-events: none;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+    <div id="info">
+        <h2>🧱 Omniblox 3D</h2>
+        <p>Vuốt màn hình để xoay góc nhìn • Lăn chuột zoom xa/gần</p>
+    </div>
+
+    <!-- Nút di chuyển cảm ứng -->
+    <div id="touch-controls">
+        <div class="control-row"><button class="ctrl-btn" id="btn-up">⬆️</button></div>
+        <div class="control-row">
+            <button class="ctrl-btn" id="btn-left">⬅️</button>
+            <button class="ctrl-btn" id="btn-down">⬇️</button>
+            <button class="ctrl-btn" id="btn-right">➡️</button>
+        </div>
+    </div>
+
+    <!-- Nút Nhảy -->
+    <button id="btn-jump">JUMP</button>
+
+    <!-- Import file main đã biên dịch (hoặc dùng bundler như Vite/Webpack) -->
+    <script type="module" src="./js/main.js"></script>
+</body>
+</html>
