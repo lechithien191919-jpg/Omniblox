@@ -4,7 +4,7 @@ export class RobloxJumpPhysics {
     public isGrounded: boolean = true;
     
     // Các thông số tinh chỉnh cảm giác nhảy y hệt Roblox
-    private jumpForce: number = 0.18;    lực đẩy khi nhảy lên
+    private jumpForce: number = 0.18;   // lực đẩy khi nhảy lên
     private gravity: number = 0.007;    // Trọng lực nhỏ giúp quá trình bay lên & rớt xuống diễn ra từ từ, chậm rãi
 
     public update(isJumpPressed: boolean, currentY: number, groundY: number): { newY: number, grounded: boolean } {
