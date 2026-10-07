@@ -3,26 +3,38 @@ import { GameRenderer } from './renderer';
 import { MapManager } from './map';
 import { RobloxPlayer } from './player';
 import { GameControls } from './controls';
+import { GameUI } from './ui';
+import { PlayerHealth } from './health';
+import { RobloxJumpPhysics } from './jumpPhysics';
 
 class GameApp {
-    private gameRenderer: GameRenderer;
-    private player: RobloxPlayer;
-    private controls: GameControls;
+    private gameRenderer!: GameRenderer;
+    private player!: RobloxPlayer;
+    private controls!: GameControls;
+    private health!: PlayerHealth;
+    private jumpPhysics!: RobloxJumpPhysics;
     private blockMeshes: THREE.Mesh[] = [];
-    private velocityY = 0;
-    private isGrounded = false;
+    private isGameStarted: boolean = false;
 
     constructor() {
+        // Khởi tạo menu sảnh chờ trước
+        new GameUI(() => {
+            this.startGame();
+        });
+    }
+
+    private startGame() {
+        this.isGameStarted = true;
         this.gameRenderer = new GameRenderer();
         this.player = new RobloxPlayer();
         this.controls = new GameControls();
+        this.health = new PlayerHealth();
+        this.jumpPhysics = new RobloxJumpPhysics();
 
         this.gameRenderer.scene.add(this.player.mesh);
-
-        // Load map mẫu và render các khối block lên scene
         this.loadAndRenderMap();
 
-        // Chạy vòng lặp game loop
+        // Bắt đầu vòng lặp game loop
         this.animate = this.animate.bind(this);
         requestAnimationFrame(this.animate);
     }
@@ -40,45 +52,33 @@ class GameApp {
         });
     }
 
-    private updatePlayerMovement() {
-        const speed = 0.1;
-        const dx = this.controls.moveDirection.x * speed;
-        const dz = this.controls.moveDirection.z * speed;
-
-        // Di chuyển nhân vật theo hướng góc nhìn camera
-        this.player.mesh.position.x += dx;
-        this.player.mesh.position.z += dz;
-
-        // Xử lý nhảy & trọng lực
-        if (this.controls.isJumping && this.isGrounded) {
-            this.velocityY = 0.2;
-            this.isGrounded = false;
-            this.controls.isJumping = false;
-        }
-
-        this.velocityY -= 0.01; // Trọng lực kéo xuống
-        this.player.mesh.position.y += this.velocityY;
-
-        // Kiểm tra chạm đất đơn giản (mặt phẳng y = 1)
-        if (this.player.mesh.position.y <= 1) {
-            this.player.mesh.position.y = 1;
-            this.velocityY = 0;
-            this.isGrounded = true;
-        }
-    }
-
     private animate() {
+        if (!this.isGameStarted) return;
         requestAnimationFrame(this.animate);
 
-        this.updatePlayerMovement();
+        // 1. Cập nhật di chuyển ngang
+        const speed = 0.08;
+        this.player.mesh.position.x += this.controls.moveDirection.x * speed;
+        this.player.mesh.position.z += this.controls.moveDirection.z * speed;
+
+        // 2. Cập nhật vật lý nhảy chậm rãi kiểu Roblox
+        const jumpResult = this.jumpPhysics.update(
+            this.controls.isJumping, 
+            this.player.mesh.position.y, 
+            1 // Mặt đất mặc định ở y = 1
+        );
+        this.player.mesh.position.y = jumpResult.newY;
+        this.controls.isJumping = false; // Reset trạng thái nhảy sau khi xử lý
+
+        // 3. Cập nhật góc nhìn camera thứ 3 bám theo nhân vật
         this.controls.updateCamera(this.gameRenderer.camera, this.player.mesh);
 
+        // 4. Render khung hình 3D
         this.gameRenderer.render();
     }
 }
 
-// Khởi chạy game khi web tải xong
+// Khởi chạy ứng dụng
 window.onload = () => {
     new GameApp();
-    console.log("🎮 Omniblox đã khởi động thành công góc nhìn thứ 3 kiểu Roblox!");
 };
